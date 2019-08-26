@@ -28,3 +28,10 @@ class JobBoleArticleItem(scrapy.Item):
     source_letters = scrapy.Field()
     update_time = scrapy.Field()
     subtitle_size = scrapy.Field()
+
+
+class ImagenetItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    src = scrapy.Field()
+    pass
