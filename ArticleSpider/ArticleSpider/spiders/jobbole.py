@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import datetime
 from scrapy.http import Request
 from urllib import parse
 
@@ -75,6 +76,12 @@ class JobboleSpider(scrapy.Spider):
         # 上传时间
         update_time = response.css(
             'ul.subinfo.clearfix li:nth-child(7)::text').extract()[0].replace('By:', '').strip()
+        try:
+            update_time = datetime.datetime.strptime(
+                update_time, "%Y/%m/%d").date()
+        except Exception as e:
+            update_time = datetime.datetime.now().date()
+
         # 字幕大小
         subtitle_size = response.css('#down1 small::text').extract()[0]
         article_item["url_object_id"] = get_md5(response.url)
