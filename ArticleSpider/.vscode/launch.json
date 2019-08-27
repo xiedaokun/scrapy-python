@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceRoot}/main.py",
-            "console": "integratedTerminal"
+            "console": "none"
         },
         {
             "name": "Python: 当前文件",

@@ -39,14 +39,15 @@ class MysqlPipline(object):
 
     def process_item(self, item, spider):
         insert_sql = """
-            insert into jobbole_article(url_object_id,first_image,title)
-            VALUES (%s,%s,%s)
+            insert into jobbole_article(url_object_id,first_image,title,content)
+            VALUES (%s,%s,%s,%s)
         """
         self.cursor.execute(
             insert_sql, (
                 item['url_object_id'],
                 item['first_image'],
-                item['title']
+                item['title'],
+                item['content'],
             ))
         self.conn.commit()
 
