@@ -4,6 +4,8 @@ from scrapy.http import Request
 from urllib import parse
 
 from ArticleSpider.items import JobBoleArticleItem
+from ArticleSpider.utils.common import get_md5
+
 
 # 第四章7-15 01：07：00
 class JobboleSpider(scrapy.Spider):
@@ -26,7 +28,7 @@ class JobboleSpider(scrapy.Spider):
 
             post_url = parse.urljoin(response.url, post_url)
             image_url = parse.urljoin(response.url, image_url)
-            yield Request(url=post_url, meta={"front_image_url": image_url}, callback=self.parse_detail)
+            yield Request(url=post_url, meta={"first_image": image_url}, callback=self.parse_detail)
         # 提取下一页
         # next_urls = response.css('.next::attr(href)').extract_first("")
         # if next_urls:
@@ -50,10 +52,9 @@ class JobboleSpider(scrapy.Spider):
         # update_time = response.xpath('//ul[@class="subinfo clearfix"]/li[7]/text()').extract()[0].replace('By:','').strip()
         # 字幕大小
         # subtitle_size = response.css('#down1 small::text').extract()[0]
-
         # 封面图
-        front_image_url = response.meta.get('front_image_url', '')
-        first_image = 'http:' + response.css('.md_img>a>img::attr(src)').extract_first()
+        first_image = response.meta.get('first_image', '')
+        front_image_url = 'https:' + response.css('.md_img>a>img::attr(src)').extract_first()
         # 标题
         title = response.css('div.md_tt.prel h1::text').extract()[0]
         # 内容
@@ -70,10 +71,10 @@ class JobboleSpider(scrapy.Spider):
         update_time = response.css('ul.subinfo.clearfix li:nth-child(7)::text').extract()[0].replace('By:', '').strip()
         # 字幕大小
         subtitle_size = response.css('#down1 small::text').extract()[0]
-
+        article_item["url_object_id"] = get_md5(response.url)
+        article_item["first_image"] = first_image
         article_item["title"] = title
-        article_item["front_image_url"] = front_image_url
-        article_item["first_image"] = [first_image]
+        article_item["front_image_url"] = [front_image_url]
         article_item["content"] = content
         article_item["url"] = response.url
         article_item["give_sums"] = give_sums

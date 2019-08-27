@@ -15,11 +15,10 @@ class ArticlespiderItem(scrapy.Item):
 
 
 class JobBoleArticleItem(scrapy.Item):
-    # 封面图
-    front_image_url = scrapy.Field()
-    first_image = scrapy.Field()
-    # 封面图路径
-    front_image_path = scrapy.Field()
+    url_object_id = scrapy.Field()
+    first_image = scrapy.Field()  # 首图
+    front_image_url = scrapy.Field()  # 封面图
+    front_image_path = scrapy.Field()  # 封面图路径
     title = scrapy.Field()
     content = scrapy.Field()
     url = scrapy.Field()
