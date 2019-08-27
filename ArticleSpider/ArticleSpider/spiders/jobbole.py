@@ -23,8 +23,10 @@ class JobboleSpider(scrapy.Spider):
         # 解析列表页中所有文章url并交给scrapy下载后并进行解析
         post_nodes = response.css(".table tbody tr")
         for post_node in post_nodes:
-            post_url = post_node.css("td.first>a::attr(href)").extract_first("")
-            image_url = post_node.css("td.first div a img::attr(src)").extract_first("")
+            post_url = post_node.css(
+                "td.first>a::attr(href)").extract_first("")
+            image_url = post_node.css(
+                "td.first div a img::attr(src)").extract_first("")
 
             post_url = parse.urljoin(response.url, post_url)
             image_url = parse.urljoin(response.url, image_url)
@@ -54,7 +56,8 @@ class JobboleSpider(scrapy.Spider):
         # subtitle_size = response.css('#down1 small::text').extract()[0]
         # 封面图
         first_image = response.meta.get('first_image', '')
-        front_image_url = 'https:' + response.css('.md_img>a>img::attr(src)').extract_first()
+        front_image_url = 'https:' + \
+            response.css('.md_img>a>img::attr(src)').extract_first()
         # 标题
         title = response.css('div.md_tt.prel h1::text').extract()[0]
         # 内容
@@ -63,12 +66,15 @@ class JobboleSpider(scrapy.Spider):
         give_sums = response.css('#scinfo i b::text').extract()[0]
         give_sums = int(give_sums)
         # 下载次数
-        download_nums = response.css('ul.subinfo.clearfix li:nth-child(3)::text').extract()[0]
+        download_nums = response.css(
+            'ul.subinfo.clearfix li:nth-child(3)::text').extract()[0]
         download_nums = int(download_nums)
         # 字母来源
-        source_letters = response.css('ul.subinfo.clearfix li:nth-child(6) span::text').extract()[0]
+        source_letters = response.css(
+            'ul.subinfo.clearfix li:nth-child(6) span::text').extract()[0]
         # 上传时间
-        update_time = response.css('ul.subinfo.clearfix li:nth-child(7)::text').extract()[0].replace('By:', '').strip()
+        update_time = response.css(
+            'ul.subinfo.clearfix li:nth-child(7)::text').extract()[0].replace('By:', '').strip()
         # 字幕大小
         subtitle_size = response.css('#down1 small::text').extract()[0]
         article_item["url_object_id"] = get_md5(response.url)
