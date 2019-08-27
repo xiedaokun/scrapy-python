@@ -79,7 +79,7 @@ class JobboleSpider(scrapy.Spider):
         try:
             update_time = datetime.datetime.strptime(
                 update_time, "%Y/%m/%d").date()
-        except Exception as e:
+        except Exception:
             update_time = datetime.datetime.now().date()
 
         # 字幕大小

@@ -30,6 +30,8 @@ class JsonWithEncodingPipeline(object):
         self.file.close()
 
 # 同步操作
+
+
 class MysqlPipline(object):
     def __init__(self):
         # 链接数据库
@@ -53,6 +55,7 @@ class MysqlPipline(object):
 
 # 异步操作
 
+
 class JsonExporterPipleline(object):
     # 调用scrapy提供的json export导出json文件
     def __init__(self):  # __init__初始化
@@ -72,7 +75,7 @@ class JsonExporterPipleline(object):
 
 class ArticleImagePipeline(ImagesPipeline):
     def item_completed(self, results, item, info):
-        for ok, value in results:
+        for value in results:
             image_file_path = value['path']
             item['front_image_path'] = image_file_path
         return item
