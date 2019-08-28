@@ -66,12 +66,17 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     # 'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
-    # 'ArticleSpider.pipelines.JsonWithEncodingPipeline': 2,
+    'ArticleSpider.pipelines.JsonWithEncodingPipeline': 2,
     # 'ArticleSpider.pipelines.JsonExporterPipleline': 2,
     # 'scrapy.pipelines.images.ImagesPipeline': 1,
-    # 'ArticleSpider.pipelines.ArticleImagePipeline': 1,
-    'ArticleSpider.pipelines.MysqlPipline': 2
+    'ArticleSpider.pipelines.ArticleImagePipeline': 1,
+    # 'ArticleSpider.pipelines.MysqlPipline': 2,
+    # 'ArticleSpider.pipelines.GaoqingPipleline': 300,
 }
+
+# IMAGES_MIN_HEIGHT = 100
+# IMAGES_MIN_WIDTH = 100
+
 # 下载对应名称item图片
 IMAGES_URLS_FIELD = "front_image_url"
 project_dir = os.path.abspath(os.path.dirname(__file__))

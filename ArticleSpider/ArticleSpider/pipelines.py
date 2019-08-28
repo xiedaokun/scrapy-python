@@ -6,8 +6,8 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 import codecs
 import json
-from scrapy.pipelines.images import ImagesPipeline
-from scrapy.exporters import JsonItemExporter
+from scrapy.pipelines.images import ImagesPipeline  # 图片下载模块
+from scrapy.exporters import JsonItemExporter  # 导出json文件模块
 import MySQLdb
 
 
@@ -19,19 +19,18 @@ class ArticlespiderPipeline(object):
 class JsonWithEncodingPipeline(object):
     # 自定义json文件的导出
     def __init__(self):
-        self.file = codecs.open('article.json', 'w', encoding='utf-8')
+        self.file = codecs.open('article.json', 'w', encoding="utf-8")
 
     def process_item(self, item, spider):
-        lines = json.dumps(dict(item), ensure_ascii=False) + '\n'
+        # 将item转换为dict，然后生成json对象，false避免中文出错
+        lines = json.dumps(dict(item), ensure_ascii=False) + "\n"
         self.file.write(lines)
         return item
-
+    # 当spider关闭的时候
     def spider_closed(self, spider):
         self.file.close()
 
 # 同步操作
-
-
 class MysqlPipline(object):
     def __init__(self):
         # 链接数据库
@@ -78,4 +77,9 @@ class ArticleImagePipeline(ImagesPipeline):
         for value in results:
             image_file_path = value['path']
             item['front_image_path'] = image_file_path
+        return item
+
+
+class GaoqingPipleline(object):
+    def process_item(self, item, spider):
         return item
