@@ -66,27 +66,6 @@ class JsonExporterPipleline(object):
 
 
 class MysqlPipline(object):
-    # # 采用同步机制写入mysql
-    # def __init__(self):
-    #     # 链接数据库
-    #     self.conn = MySQLdb.connect('127.0.0.1', 'root', '', 'article_spider', charset="utf8", use_unicode=True)
-    #     self.cursor = self.conn.cursor()
-
-    # def process_item(self, item, spider):
-    #     insert_sql = """
-    #         insert into jobbole_article(title,url,url_object_id,praise_nums,comment_nums,fav_nums,content)
-    #         VALUES(%s,%s,%s,%s,%s,%s,%s)
-    #     """
-    #     self.cursor.execute(insert_sql, (
-    #         item['title'],
-    #         item['url'],
-    #         item['url_object_id'],
-    #         item['praise_nums'],
-    #         item['comment_nums'],
-    #         item['fav_nums'],
-    #         item['content'],
-    #     ))
-    #     self.conn.commit()
 
     # 采用同步的机制写入mysql
     def __init__(self):
