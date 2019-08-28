@@ -52,10 +52,10 @@ class GaoqingSpider(scrapy.Spider):
         gaoqing_item=GaoqingItem()
         gaoqing_item['front_image_url']=[front_image_url]
         gaoqing_item['title']=title
-        gaoqing_item['create_date']=create_date
-        gaoqing_item['praise_nums']=praise_nums
-        gaoqing_item['fav_nums']=fav_nums
-        gaoqing_item['comment_nums']=comment_nums
+        gaoqing_item['create_date']=re.search(r"(\d{4}-\d{1,2}-\d{1,2})",create_date).group(1)
+        gaoqing_item['praise_nums']=int(praise_nums)
+        gaoqing_item['fav_nums']=int(fav_nums)
+        gaoqing_item['comment_nums']=float(comment_nums)
         gaoqing_item['content']=content
         gaoqing_item['tags']=tags
 

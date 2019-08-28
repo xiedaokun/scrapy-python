@@ -26,9 +26,11 @@ class ArticleImagePipeline(ImagesPipeline):
 
         return item
 
+# python提供的json导出文件
+
 
 class JsonWithEncodingPipeline(object):
-    # 自定义json文件的导出
+
     def __init__(self):
         self.file = codecs.open('article.json', 'w', encoding='utf-8')
 
@@ -42,9 +44,11 @@ class JsonWithEncodingPipeline(object):
     def spider_closed(self, spider):
         self.file.close()
 
+# scrapy提供的json导出文件
+
 
 class JsonExporterPipleline(object):
-    # 调用scrapy提供的json export导出json文件
+
     def __init__(self):  # __init__初始化
         self.file = open('articleexport.json', 'wb')  # wb 二进制打开方式
         self.exporter = JsonItemExporter(
@@ -61,6 +65,70 @@ class JsonExporterPipleline(object):
         return item
 
 
-class GaoqingPipleline(object):
+class MysqlPipline(object):
+    # # 采用同步机制写入mysql
+    # def __init__(self):
+    #     # 链接数据库
+    #     self.conn = MySQLdb.connect('127.0.0.1', 'root', '', 'article_spider', charset="utf8", use_unicode=True)
+    #     self.cursor = self.conn.cursor()
+
+    # def process_item(self, item, spider):
+    #     insert_sql = """
+    #         insert into jobbole_article(title,url,url_object_id,praise_nums,comment_nums,fav_nums,content)
+    #         VALUES(%s,%s,%s,%s,%s,%s,%s)
+    #     """
+    #     self.cursor.execute(insert_sql, (
+    #         item['title'],
+    #         item['url'],
+    #         item['url_object_id'],
+    #         item['praise_nums'],
+    #         item['comment_nums'],
+    #         item['fav_nums'],
+    #         item['content'],
+    #     ))
+    #     self.conn.commit()
+
+    # 采用同步的机制写入mysql
+    def __init__(self):
+        self.conn = MySQLdb.connect(
+            '127.0.0.1',
+            'root',
+            '',
+            'article_spider',
+            charset="utf8",
+            use_unicode=True
+        )
+        self.cursor = self.conn.cursor()
+
     def process_item(self, item, spider):
+        insert_sql = """
+            insert into jobbole_article(
+                front_image_url,
+                title,
+                create_date,
+                praise_nums,
+                fav_nums,
+                comment_nums,
+                content,
+                tags,
+                url_object_id
+            )
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        """
+        self.cursor.execute(insert_sql, (
+            item["front_image_url"],
+            item["title"],
+            item["create_date"],
+            item["praise_nums"],
+            item["fav_nums"],
+            item["comment_nums"],
+            item["content"],
+            item["tags"],
+            item["url_object_id"]
+        ))
+        self.conn.commit()
         return item
+
+# class GaoqingPipleline(object):
+#     def process_item(self, item, spider):
+#         return item
