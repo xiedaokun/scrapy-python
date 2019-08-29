@@ -67,7 +67,7 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
     # 'scrapy.pipelines.images.ImagesPipeline': 1,
     # 'ArticleSpider.pipelines.ArticleImagePipeline': 1,
-    'ArticleSpider.pipelines.MysqlPipline': 2,
+    # 'ArticleSpider.pipelines.MysqlTwistedPipline': 2,
     # 'ArticleSpider.pipelines.GaoqingPipleline': 300,
 
 }
@@ -107,6 +107,6 @@ ITEM_PIPELINES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 MYSQL_HOST = '127.0.0.1'
-MYSQL_DBNAME = 'jobbole_article'
+MYSQL_DBNAME = 'article_spider'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = ''

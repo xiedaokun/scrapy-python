@@ -6,9 +6,11 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 import codecs
 import json
+import MySQLdb
+import MySQLdb.cursors
 from scrapy.pipelines.images import ImagesPipeline  # scrapy图片自定义下载模块
 from scrapy.exporters import JsonItemExporter  # scrapy导出json文件模块
-import MySQLdb
+from twisted.enterprise import adbapi
 
 
 class ArticlespiderPipeline(object):
@@ -19,10 +21,11 @@ class ArticlespiderPipeline(object):
 class ArticleImagePipeline(ImagesPipeline):
     # 重写该方法可从result中获取到图片的实际下载地址
     def item_completed(self, results, item, info):
-        for ok, value in results:
-            image_file_path = value["path"]
-            print(ok, image_file_path)
-        item["front_image_path"] = image_file_path
+        if 'front_image_url' in item:
+            for ok, value in results:
+                image_file_path = value["path"]
+                print(ok, image_file_path)
+            item["front_image_path"] = image_file_path
 
         return item
 
@@ -94,8 +97,9 @@ class MysqlPipline(object):
             )
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """
+        front_image_url=item['front_image_url'][0]
         self.cursor.execute(insert_sql, (
-            item["front_image_url"],
+            front_image_url,
             item["title"],
             item["create_date"],
             item["praise_nums"],
@@ -107,6 +111,65 @@ class MysqlPipline(object):
         ))
         self.conn.commit()
         return item
+
+
+class MysqlTwistedPipline(object):
+    def __init__(self, dbpool):
+        self.dbpool = dbpool
+
+    @classmethod
+    def from_settings(cls, settings):
+        dbparms = dict(
+            host=settings['MYSQL_HOST'],
+            db=settings['MYSQL_DBNAME'],
+            user=settings['MYSQL_USER'],
+            password=settings['MYSQL_PASSWORD'],
+            charset='utf8',
+            cursorclass=MySQLdb.cursors.DictCursor,
+            use_unicode=True
+        )
+
+        dbpool = adbapi.ConnectionPool('MySQLdb', **dbparms)
+        return cls(dbpool)
+
+    def process_item(self, item, spider):
+        # 使用twisted将mysql插入变成异步执行
+        query = self.dbpool.runInteraction(self.do_insert, item)
+        query.addErrback(self.handle_error)  # 处理异常
+
+    def handle_error(self, failure):
+        # 处理异步插入的异常
+        print(failure)
+
+    def do_insert(self, cursor, item):
+
+        insert_sql = """
+            insert into jobbole_article(
+                front_image_url,
+                title,
+                create_date,
+                praise_nums,
+                fav_nums,
+                comment_nums,
+                content,
+                tags,
+                url_object_id
+            )
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        """
+        front_image_url=item['front_image_url'][0]
+        cursor.execute(insert_sql, (
+            front_image_url,
+            item["title"],
+            item["create_date"],
+            item["praise_nums"],
+            item["fav_nums"],
+            item["comment_nums"],
+            item["content"],
+            item["tags"],
+            item["url_object_id"]
+        ))
+
 
 # class GaoqingPipleline(object):
 #     def process_item(self, item, spider):
