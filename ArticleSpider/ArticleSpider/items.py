@@ -29,11 +29,12 @@ def date_convert(value):
             create_date, '%Y-%m-%d').date()
     except Exception as e:
         create_date = datetime.datetime.now().date()
+        print(e)
     return create_date
 
 
 def get_nums(value):
-    match_re = re.match('.*?(\d+).*', value)
+    match_re = re.match(r'.*?(\d+).*', value)
     if match_re:
         nums = int(match_re.group(1))
     else:
