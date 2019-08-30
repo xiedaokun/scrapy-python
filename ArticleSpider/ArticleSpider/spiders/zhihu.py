@@ -34,8 +34,7 @@ class ZhihuSpider(scrapy.Spider):
             }
             import time
             t = str(int(time.time()*100))
-            captcha_url = 'https://www.zhihu.com/captcha.gif?r={0}&type=login'.format(
-                t)
+            captcha_url = 'https://www.zhihu.com/captcha.gif?r={0}&type=login'.format(t)
             yield scrapy.Request(captcha_url, headers=self.headers, meta={'post_data': post_data}, callback=self.login_after_captcha)
 
     def login_after_captcha(self,response):
