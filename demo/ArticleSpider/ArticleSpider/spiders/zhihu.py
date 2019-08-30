@@ -11,6 +11,7 @@ except:
 import scrapy
 from scrapy.loader import ItemLoader
 from items import ZhihuQuestionItem, ZhihuAnswerItem
+from ArticleSpider.items import ZhihuQuestionItem,ZhihuAnswerItem
 
 
 class ZhihuSpider(scrapy.Spider):
